@@ -1,0 +1,180 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics - Dashboard Administrativo{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>
+            <i class="fas fa-chart-line text-primary me-2"></i>
+            Analytics y Estadísticas
+        </h2>
+        <div class="text-muted">
+            <i class="fas fa-calendar me-1"></i>
+            Últimos 30 días
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card text-center bg-primary text-white">
+                <div class="card-body">
+                    <i class="fas fa-eye fa-2x mb-2"></i>
+                    <h3 class="mb-0">{{ total_page_views }}</h3>
+                    <p class="mb-0">Visitas totales</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center bg-success text-white">
+                <div class="card-body">
+                    <i class="fas fa-user-md fa-2x mb-2"></i>
+                    <h3 class="mb-0">{{ total_profile_views }}</h3>
+                    <p class="mb-0">Perfiles vistos</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card text-center bg-info text-white">
+                <div class="card-body">
+                    <i class="fas fa-search fa-2x mb-2"></i>
+                    <h3 class="mb-0">{{ total_searches }}</h3>
+                    <p class="mb-0">Búsquedas realizadas</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Daily Views Chart -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-area me-2"></i>
+                        Visitas Diarias
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="dailyViewsChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Popular Professionals -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-star me-2"></i>
+                        Profesionales Más Vistos
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if popular_professionals %}
+                        <div class="list-group list-group-flush">
+                            {% for prof in popular_professionals %}
+                            <div class="list-group-item border-0 px-0">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1">{{ prof.name }}</h6>
+                                        <small class="text-muted">{{ prof.specialty }}</small>
+                                    </div>
+                                    <span class="badge bg-primary rounded-pill">{{ prof.views }}</span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center">No hay datos disponibles</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Analytics Options -->
+    <div class="card shadow-sm mt-4">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="fas fa-cog me-2"></i>
+                Opciones Adicionales de Analytics
+            </h5>
+        </div>
+        <div class="card-body">
+            <p class="text-muted mb-3">Datos que se están registrando automáticamente:</p>
+            <ul class="list-unstyled">
+                <li><i class="fas fa-check text-success me-2"></i> Visitas a páginas principales</li>
+                <li><i class="fas fa-check text-success me-2"></i> Clics en perfiles de profesionales</li>
+                <li><i class="fas fa-check text-success me-2"></i> Búsquedas realizadas</li>
+                <li><i class="fas fa-check text-success me-2"></i> Información de navegadores y dispositivos</li>
+                <li><i class="fas fa-check text-success me-2"></i> Direcciones IP para análisis geográfico</li>
+            </ul>
+            
+            <div class="alert alert-info">
+                <i class="fas fa-lightbulb me-2"></i>
+                <strong>Sugerencias de análisis adicionales:</strong>
+                <ul class="mt-2 mb-0">
+                    <li>Tracking de clics en botones de contacto (teléfono/WhatsApp)</li>
+                    <li>Tiempo de permanencia en perfiles</li>
+                    <li>Análisis de palabras clave más buscadas</li>
+                    <li>Seguimiento de conversiones (contactos efectivos)</li>
+                    <li>Análisis de horarios de mayor actividad</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Daily Views Chart
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('dailyViewsChart');
+    if (ctx) {
+        const dailyViewsChart = new Chart(ctx.getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: [
+                    {% for view in daily_views %}
+                        '{{ view.date.strftime("%d/%m") if view.date else "N/A" }}'{% if not loop.last %},{% endif %}
+                    {% endfor %}
+                ],
+                datasets: [{
+                    label: 'Visitas',
+                    data: [
+                        {% for view in daily_views %}
+                            {{ view.views }}{% if not loop.last %},{% endif %}
+                        {% endfor %}
+                    ],
+                    borderColor: 'rgb(75, 192, 192)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                    tension: 0.1,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

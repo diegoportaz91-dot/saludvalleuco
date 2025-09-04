@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+
+{% block title %}Buscar Profesionales - Salud Valle de Uco{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Search Form -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-10">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h3 class="mb-4">
+                        <i class="fas fa-search text-primary me-2"></i>
+                        Buscar Profesionales de la Salud
+                    </h3>
+                    
+                    <form method="GET">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                {{ form.query.label(class="form-label") }}
+                                {{ form.query(class="form-control", placeholder="Nombre, especialidad...") }}
+                            </div>
+                            <div class="col-md-3">
+                                {{ form.specialty.label(class="form-label") }}
+                                {{ form.specialty(class="form-select") }}
+                            </div>
+                            <div class="col-md-3">
+                                {{ form.location.label(class="form-label") }}
+                                {{ form.location(class="form-select") }}
+                            </div>
+                            <div class="col-md-2 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <div class="form-check">
+                                    {{ form.available_only(class="form-check-input") }}
+                                    {{ form.available_only.label(class="form-check-label") }}
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Results -->
+    <div class="row">
+        <div class="col-12">
+            <!-- Results Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4>
+                    {% if query or specialty or location %}
+                        Resultados de búsqueda
+                        {% if professionals %}
+                            <span class="text-muted">({{ professionals|length }} encontrado{{ 's' if professionals|length != 1 else '' }})</span>
+                        {% endif %}
+                    {% else %}
+                        Todos los Profesionales
+                        {% if professionals %}
+                            <span class="text-muted">({{ professionals|length }} total{{ 'es' if professionals|length != 1 else '' }})</span>
+                        {% endif %}
+                    {% endif %}
+                </h4>
+                
+                {% if query or specialty or location %}
+                    <a href="{{ url_for('search') }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-times me-1"></i>Limpiar filtros
+                    </a>
+                {% endif %}
+            </div>
+
+            <!-- Active Filters -->
+            {% if query or specialty or location %}
+                <div class="mb-4">
+                    <small class="text-muted">Filtros activos:</small>
+                    <div class="mt-1">
+                        {% if query %}
+                            <span class="badge bg-primary me-2">
+                                Búsqueda: "{{ query }}"
+                            </span>
+                        {% endif %}
+                        {% if specialty %}
+                            <span class="badge bg-info me-2">
+                                Especialidad: {{ specialty }}
+                            </span>
+                        {% endif %}
+                        {% if location %}
+                            <span class="badge bg-success me-2">
+                                Localidad: {{ location }}
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Results -->
+            {% if professionals %}
+                <div class="row g-4">
+                    {% for professional in professionals %}
+                        <div class="col-lg-6">
+                            <div class="card h-100 shadow-sm professional-result-card">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-start">
+                                        <!-- Photo -->
+                                        {% if professional.photo_url %}
+                                            <img src="{{ professional.photo_url }}" 
+                                                 alt="{{ professional.name }}" 
+                                                 class="rounded-circle me-3 professional-photo">
+                                        {% else %}
+                                            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-3 professional-photo-placeholder">
+                                                <i class="fas fa-user"></i>
+                                            </div>
+                                        {% endif %}
+                                        
+                                        <div class="flex-grow-1">
+                                            <!-- Header -->
+                                            <div class="mb-2">
+                                                <h5 class="card-title mb-0">{{ professional.name }}</h5>
+                                            </div>
+                                            
+                                            <!-- Basic Info -->
+                                            <p class="text-primary mb-1">
+                                                <i class="fas fa-stethoscope me-1"></i>
+                                                {{ professional.specialty }}
+                                            </p>
+                                            <p class="text-muted mb-2">
+                                                <i class="fas fa-map-marker-alt me-1"></i>
+                                                {{ professional.location }}
+                                            </p>
+                                            
+                                            <!-- Contact Info -->
+                                            <div class="contact-info mb-3">
+                                                <p class="mb-1">
+                                                    <i class="fas fa-phone me-1 text-success"></i>
+                                                    <a href="tel:{{ professional.phone }}" class="text-decoration-none">
+                                                        {{ professional.phone }}
+                                                    </a>
+                                                </p>
+                                                
+                                                {% if professional.whatsapp %}
+                                                    <p class="mb-1">
+                                                        <a href="{{ professional.get_whatsapp_link() }}" 
+                                                           class="btn btn-sm btn-success text-decoration-none" 
+                                                           target="_blank">
+                                                            <i class="fab fa-whatsapp me-1"></i>
+                                                            WhatsApp
+                                                        </a>
+                                                    </p>
+                                                {% endif %}
+                                            </div>
+                                            
+                                            <!-- Additional Info Preview -->
+                                            {% if professional.schedule %}
+                                                <p class="small text-muted mb-1">
+                                                    <i class="fas fa-clock me-1"></i>
+                                                    {{ professional.schedule[:50] }}{% if professional.schedule|length > 50 %}...{% endif %}
+                                                </p>
+                                            {% endif %}
+                                            
+                                            {% if professional.insurance_coverage %}
+                                                <p class="small text-muted mb-1">
+                                                    <i class="fas fa-shield-alt me-1"></i>
+                                                    Obras sociales disponibles
+                                                </p>
+                                            {% endif %}
+                                            
+                                            <!-- Actions -->
+                                            <div class="mt-3">
+                                                <a href="{{ url_for('professional_detail', professional_id=professional.id) }}" 
+                                                   class="btn btn-primary btn-sm">
+                                                    Ver Perfil Completo
+                                                    <i class="fas fa-arrow-right ms-1"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <!-- No Results -->
+                <div class="text-center py-5">
+                    <div class="mb-4">
+                        <i class="fas fa-search text-muted" style="font-size: 4rem; opacity: 0.3;"></i>
+                    </div>
+                    <h4 class="text-muted">No se encontraron profesionales</h4>
+                    <p class="text-muted">
+                        {% if query or specialty or location %}
+                            Intenta modificar los criterios de búsqueda o 
+                            <a href="{{ url_for('search') }}" class="text-decoration-none">ver todos los profesionales</a>.
+                        {% else %}
+                            No hay profesionales registrados en el directorio.
+                        {% endif %}
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Auto-submit form when filters change
+document.querySelectorAll('select[name="specialty"], select[name="location"]').forEach(select => {
+    select.addEventListener('change', function() {
+        this.form.submit();
+    });
+});
+</script>
+{% endblock %}

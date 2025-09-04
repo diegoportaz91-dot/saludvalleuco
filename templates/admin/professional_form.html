@@ -1,0 +1,360 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} - Salud Valle de Uco{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>
+                <i class="fas fa-{{ 'plus' if not professional else 'edit' }} text-primary me-2"></i>
+                {{ title }}
+            </h2>
+            <p class="text-muted mb-0">
+                {% if professional %}
+                    Modifica la información del profesional
+                {% else %}
+                    Completa la información del nuevo profesional
+                {% endif %}
+            </p>
+        </div>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Volver al panel
+        </a>
+    </div>
+
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        
+        <div class="row">
+            <!-- Basic Information -->
+            <div class="col-lg-8">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">
+                            <i class="fas fa-user me-2"></i>
+                            Información Básica
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                {{ form.name.label(class="form-label") }}
+                                {{ form.name(class="form-control" + (" is-invalid" if form.name.errors else "")) }}
+                                {% if form.name.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.name.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6">
+                                {{ form.specialty.label(class="form-label") }}
+                                {{ form.specialty(class="form-select" + (" is-invalid" if form.specialty.errors else "")) }}
+                                {% if form.specialty.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.specialty.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6">
+                                {{ form.location.label(class="form-label") }}
+                                {{ form.location(class="form-select" + (" is-invalid" if form.location.errors else "")) }}
+                                {% if form.location.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.location.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6">
+                                {{ form.phone.label(class="form-label") }}
+                                {{ form.phone(class="form-control" + (" is-invalid" if form.phone.errors else "")) }}
+                                {% if form.phone.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.phone.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Premium Information -->
+                <div class="card shadow-sm mb-4" id="premiumFields">
+                    <div class="card-header bg-warning text-dark">
+                        <h5 class="mb-0">
+                            <i class="fas fa-crown me-2"></i>
+                            Información Premium
+                        </h5>
+                        <small class="text-muted">Solo visible para profesionales con plan premium</small>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                {{ form.photo_url.label(class="form-label") }}
+                                {{ form.photo_url(class="form-control" + (" is-invalid" if form.photo_url.errors else "")) }}
+                                {% if form.photo_url.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.photo_url.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">URL completa de la imagen (ej: https://ejemplo.com/foto.jpg)</div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                {{ form.whatsapp.label(class="form-label") }}
+                                {{ form.whatsapp(class="form-control" + (" is-invalid" if form.whatsapp.errors else "")) }}
+                                {% if form.whatsapp.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.whatsapp.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">Número de WhatsApp (ej: +54 261 123-4567)</div>
+                            </div>
+                            
+                            <div class="col-12">
+                                {{ form.address.label(class="form-label") }}
+                                {{ form.address(class="form-control" + (" is-invalid" if form.address.errors else ""), rows="2") }}
+                                {% if form.address.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.address.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6">
+                                {{ form.latitude.label(class="form-label") }}
+                                {{ form.latitude(class="form-control" + (" is-invalid" if form.latitude.errors else "")) }}
+                                {% if form.latitude.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.latitude.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">Coordenada de latitud para el mapa</div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                {{ form.longitude.label(class="form-label") }}
+                                {{ form.longitude(class="form-control" + (" is-invalid" if form.longitude.errors else "")) }}
+                                {% if form.longitude.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.longitude.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">Coordenada de longitud para el mapa</div>
+                            </div>
+                            
+                            <div class="col-12">
+                                {{ form.schedule.label(class="form-label") }}
+                                {{ form.schedule(class="form-control" + (" is-invalid" if form.schedule.errors else ""), rows="3") }}
+                                {% if form.schedule.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.schedule.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">Horarios de atención (ej: Lunes a Viernes 9:00 - 18:00)</div>
+                            </div>
+                            
+                            <div class="col-12">
+                                {{ form.insurance_coverage.label(class="form-label") }}
+                                {{ form.insurance_coverage(class="form-control" + (" is-invalid" if form.insurance_coverage.errors else ""), rows="3") }}
+                                {% if form.insurance_coverage.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.insurance_coverage.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">Obras sociales que acepta (una por línea)</div>
+                            </div>
+                            
+                            <div class="col-12">
+                                {{ form.description.label(class="form-label") }}
+                                {{ form.description(class="form-control" + (" is-invalid" if form.description.errors else ""), rows="3") }}
+                                {% if form.description.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.description.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                                <div class="form-text">Descripción del profesional y servicios</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Sidebar -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-light">
+                        <h6 class="mb-0">
+                            <i class="fas fa-cog me-2"></i>
+                            Configuración
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            {{ form.plan.label(class="form-label") }}
+                            {{ form.plan(class="form-select" + (" is-invalid" if form.plan.errors else ""), id="planSelect") }}
+                            {% if form.plan.errors %}
+                                <div class="invalid-feedback">
+                                    {% for error in form.plan.errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="mb-3">
+                            <div class="form-check">
+                                {{ form.available(class="form-check-input" + (" is-invalid" if form.available.errors else "")) }}
+                                {{ form.available.label(class="form-check-label") }}
+                                {% if form.available.errors %}
+                                    <div class="invalid-feedback">
+                                        {% for error in form.available.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <small class="text-muted">Si está deshabilitado, no aparecerá en búsquedas</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            {{ form.submit(class="btn btn-primary btn-lg") }}
+                            
+                            {% if professional %}
+                                <a href="{{ url_for('professional_detail', professional_id=professional.id) }}" 
+                                   class="btn btn-outline-info" 
+                                   target="_blank">
+                                    <i class="fas fa-eye me-2"></i>Ver perfil público
+                                </a>
+                            {% endif %}
+                            
+                            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-2"></i>Cancelar
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Plan Information -->
+                <div class="card shadow-sm mt-3">
+                    <div class="card-header bg-light">
+                        <h6 class="mb-0">
+                            <i class="fas fa-info-circle me-2"></i>
+                            Información de Planes
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <h6 class="text-success">Plan Básico (Gratis)</h6>
+                            <ul class="small text-muted mb-0">
+                                <li>Nombre y especialidad</li>
+                                <li>Teléfono</li>
+                                <li>Localidad</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h6 class="text-warning">Plan Premium</h6>
+                            <ul class="small text-muted mb-0">
+                                <li>Todo lo del plan básico</li>
+                                <li>Foto de perfil</li>
+                                <li>Horarios de atención</li>
+                                <li>Dirección con mapa</li>
+                                <li>WhatsApp</li>
+                                <li>Obras sociales</li>
+                                <li>Perfil destacado</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Toggle premium fields based on plan selection
+document.getElementById('planSelect').addEventListener('change', function() {
+    const premiumFields = document.getElementById('premiumFields');
+    const isPremium = this.value === 'premium';
+    
+    premiumFields.style.opacity = isPremium ? '1' : '0.5';
+    
+    // Disable/enable premium fields
+    const premiumInputs = premiumFields.querySelectorAll('input, textarea, select');
+    premiumInputs.forEach(input => {
+        if (!isPremium && input.id !== 'planSelect') {
+            input.disabled = true;
+        } else {
+            input.disabled = false;
+        }
+    });
+});
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('planSelect').dispatchEvent(new Event('change'));
+});
+
+// Photo preview
+document.querySelector('input[name="photo_url"]').addEventListener('input', function() {
+    const url = this.value;
+    const existingPreview = document.getElementById('photoPreview');
+    
+    if (existingPreview) {
+        existingPreview.remove();
+    }
+    
+    if (url && url.startsWith('http')) {
+        const preview = document.createElement('div');
+        preview.id = 'photoPreview';
+        preview.className = 'mt-2';
+        preview.innerHTML = `
+            <small class="text-muted">Vista previa:</small><br>
+            <img src="${url}" alt="Vista previa" class="rounded" style="max-width: 100px; max-height: 100px; object-fit: cover;">
+        `;
+        this.parentNode.appendChild(preview);
+        
+        // Handle image load error
+        preview.querySelector('img').addEventListener('error', function() {
+            preview.innerHTML = '<small class="text-danger">Error al cargar la imagen</small>';
+        });
+    }
+});
+</script>
+{% endblock %}

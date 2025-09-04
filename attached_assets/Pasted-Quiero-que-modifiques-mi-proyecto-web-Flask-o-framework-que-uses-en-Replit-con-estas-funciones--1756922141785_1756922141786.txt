@@ -1,0 +1,98 @@
+Quiero que modifiques mi proyecto web (Flask o framework que uses en Replit) con estas funciones:
+
+🔎 Parte pública (visible para los usuarios/pacientes)
+
+Página principal
+
+Buscador por especialidad, nombre o localidad.
+
+Listado de categorías (ej: pediatría, ginecología, odontología, etc.).
+
+Espacios para publicidad minimalista (laterales o entre listados, sin sobrecargar).
+
+Frase destacada (sin mención de planes):
+
+¿Eres un profesional de la salud?
+Únete a nuestro directorio y conecta con pacientes en San Carlos, Tunuyán y Tupungato.
+Ayudamos a que más personas encuentren tu consulta fácilmente.
+Contáctanos: 2604-370925
+
+Perfil de cada profesional
+
+Nombre completo.
+
+Especialidad.
+
+Localidades donde atiende.
+
+Dirección del consultorio (solo texto, sin Google Maps).
+
+Días y horarios de atención.
+
+Contacto:
+
+Si es teléfono → botón “Llamar ahora”.
+
+Si es WhatsApp → botón “Enviar mensaje por WhatsApp”, que abra la app con un mensaje predefinido como:
+
+“Hola Dr./Dra. [Apellido], encontré su perfil en el Directorio de Salud Valle de Uco y quisiera más información sobre su atención.”
+
+Publicidad ligera (ejemplo: un banner debajo del perfil o cada 3–4 perfiles).
+
+⚠️ Importante: en la parte pública no debe aparecer el plan del profesional (básico/premium), ni estado disponible/no disponible, ni el botón de login.
+
+🔑 Panel de administrador (acceso privado, oculto al público)
+
+Acceso oculto
+
+El login no debe aparecer en la página pública.
+
+Solo accesible desde una ruta oculta: /admin-login.
+
+Requiere usuario y contraseña.
+
+Gestión de profesionales
+
+Crear, editar, eliminar perfiles.
+
+Definir tipo de contacto (solo llamadas, solo WhatsApp, ambos).
+
+Asignar plan (Básico o Premium) → solo visible para administrador.
+
+Activar/desactivar perfiles.
+
+Estadísticas
+
+Número total de visitas a la página.
+
+Clicks en cada perfil.
+
+Clicks en botones de contacto (llamadas y WhatsApp).
+
+Ranking de profesionales más visitados.
+
+Origen de tráfico (móvil/escritorio).
+
+Opción para exportar reportes a Excel o PDF.
+
+Gestión de anuncios/publicidad
+
+Espacios configurables para colocar banners propios o de terceros.
+
+Gestión de pagos / planes Premium
+
+En cada perfil (solo admin) debe haber un botón para enviar un mensaje automático de recordatorio de pago al profesional.
+
+Ese mensaje debe enviarse por WhatsApp o email según el contacto registrado.
+
+Ejemplo de mensaje automático (editable):
+
+“Hola Dr./Dra. [Apellido], le recordamos que el pago de su plan Premium en el Directorio de Salud Valle de Uco está pendiente. Por favor, contáctese con nosotros para regularizarlo. Gracias.”
+
+⚡ Extras
+
+La página debe ser rápida, limpia y fácil de usar.
+
+Todo lo de planes (básico/premium) solo debe existir en el panel admin, nunca en la parte pública.
+
+El sistema de login/admin debe estar oculto al público, accesible solo por URL privada.

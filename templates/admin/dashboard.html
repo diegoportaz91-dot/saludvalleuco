@@ -1,0 +1,331 @@
+{% extends "base.html" %}
+
+{% block title %}Panel de Administración - Salud Valle de Uco{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>
+                <i class="fas fa-tachometer-alt text-primary me-2"></i>
+                Panel de Administración
+            </h2>
+            <p class="text-muted mb-0">Gestiona el directorio de profesionales de la salud</p>
+        </div>
+        <div class="btn-group">
+            <a href="{{ url_for('admin_add_professional') }}" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>
+                Agregar Profesional
+            </a>
+            <a href="{{ url_for('admin_analytics') }}" class="btn btn-info">
+                <i class="fas fa-chart-line me-2"></i>
+                Analytics
+            </a>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Total Profesionales</h6>
+                            <h3 class="mb-0">{{ stats.total }}</h3>
+                        </div>
+                        <div>
+                            <i class="fas fa-users fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Plan Básico</h6>
+                            <h3 class="mb-0">{{ stats.basic }}</h3>
+                        </div>
+                        <div>
+                            <i class="fas fa-user fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card bg-warning text-dark">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Plan Premium</h6>
+                            <h3 class="mb-0">{{ stats.premium }}</h3>
+                        </div>
+                        <div>
+                            <i class="fas fa-crown fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-title">Disponibles</h6>
+                            <h3 class="mb-0">{{ stats.available }}</h3>
+                        </div>
+                        <div>
+                            <i class="fas fa-check-circle fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Professionals Management -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-light">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h5 class="mb-0">
+                        <i class="fas fa-list me-2"></i>
+                        Lista de Profesionales
+                    </h5>
+                </div>
+                <div class="col-auto">
+                    <!-- Search Form -->
+                    <form method="GET" class="d-flex">
+                        <input type="text" 
+                               name="search" 
+                               value="{{ search }}"
+                               class="form-control form-control-sm me-2" 
+                               placeholder="Buscar profesional..."
+                               style="width: 200px;">
+                        <button type="submit" class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-search"></i>
+                        </button>
+                        {% if search %}
+                            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-danger btn-sm ms-1">
+                                <i class="fas fa-times"></i>
+                            </a>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card-body p-0">
+            {% if professionals.items %}
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Profesional</th>
+                                <th>Especialidad</th>
+                                <th>Localidad</th>
+                                <th>Plan</th>
+                                <th>Estado</th>
+                                <th>Teléfono</th>
+                                <th>Registro</th>
+                                <th class="text-end">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for professional in professionals.items %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            {% if professional.is_premium and professional.photo_url %}
+                                                <img src="{{ professional.photo_url }}" 
+                                                     alt="{{ professional.name }}" 
+                                                     class="rounded-circle me-2"
+                                                     style="width: 32px; height: 32px; object-fit: cover;">
+                                            {% else %}
+                                                <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-2"
+                                                     style="width: 32px; height: 32px; font-size: 0.8rem;">
+                                                    {{ professional.name[0] }}
+                                                </div>
+                                            {% endif %}
+                                            <strong>{{ professional.name }}</strong>
+                                        </div>
+                                    </td>
+                                    <td>{{ professional.specialty }}</td>
+                                    <td>{{ professional.location }}</td>
+                                    <td>
+                                        {% if professional.is_premium %}
+                                            <span class="badge bg-warning text-dark">
+                                                <i class="fas fa-crown me-1"></i>Premium
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">Básico</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if professional.available %}
+                                            <span class="badge bg-success">
+                                                <i class="fas fa-check me-1"></i>Disponible
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-danger">
+                                                <i class="fas fa-times me-1"></i>No disponible
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <a href="tel:{{ professional.phone }}" class="text-decoration-none">
+                                            {{ professional.phone }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <small class="text-muted">
+                                            {{ professional.created_at.strftime('%d/%m/%Y') }}
+                                        </small>
+                                    </td>
+                                    <td class="text-end">
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a href="{{ url_for('professional_detail', professional_id=professional.id) }}" 
+                                               class="btn btn-outline-primary" 
+                                               title="Ver perfil"
+                                               target="_blank">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="{{ url_for('admin_edit_professional', professional_id=professional.id) }}" 
+                                               class="btn btn-outline-secondary"
+                                               title="Editar">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <button type="button" 
+                                                    class="btn btn-outline-danger"
+                                                    title="Eliminar"
+                                                    onclick="confirmDelete('{{ professional.name }}', {{ professional.id }})">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                {% if professionals.pages > 1 %}
+                    <div class="card-footer bg-light">
+                        <nav aria-label="Paginación">
+                            <ul class="pagination pagination-sm justify-content-center mb-0">
+                                {% if professionals.has_prev %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ url_for('admin_dashboard', page=professionals.prev_num, search=search) }}">
+                                            <i class="fas fa-chevron-left"></i>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                                
+                                {% for page_num in professionals.iter_pages() %}
+                                    {% if page_num %}
+                                        {% if page_num != professionals.page %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="{{ url_for('admin_dashboard', page=page_num, search=search) }}">
+                                                    {{ page_num }}
+                                                </a>
+                                            </li>
+                                        {% else %}
+                                            <li class="page-item active">
+                                                <span class="page-link">{{ page_num }}</span>
+                                            </li>
+                                        {% endif %}
+                                    {% else %}
+                                        <li class="page-item disabled">
+                                            <span class="page-link">…</span>
+                                        </li>
+                                    {% endif %}
+                                {% endfor %}
+                                
+                                {% if professionals.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ url_for('admin_dashboard', page=professionals.next_num, search=search) }}">
+                                            <i class="fas fa-chevron-right"></i>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-users text-muted" style="font-size: 4rem; opacity: 0.3;"></i>
+                    <h5 class="text-muted mt-3">
+                        {% if search %}
+                            No se encontraron profesionales que coincidan con "{{ search }}"
+                        {% else %}
+                            No hay profesionales registrados
+                        {% endif %}
+                    </h5>
+                    <p class="text-muted">
+                        {% if search %}
+                            <a href="{{ url_for('admin_dashboard') }}" class="text-decoration-none">
+                                Ver todos los profesionales
+                            </a>
+                        {% else %}
+                            <a href="{{ url_for('admin_add_professional') }}" class="btn btn-primary">
+                                <i class="fas fa-plus me-2"></i>Agregar el primer profesional
+                            </a>
+                        {% endif %}
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">
+                    <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                    Confirmar eliminación
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de que deseas eliminar al profesional <strong id="professionalName"></strong>?</p>
+                <p class="text-muted small">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form id="deleteForm" method="POST" style="display: inline;">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fas fa-trash me-2"></i>Eliminar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function confirmDelete(professionalName, professionalId) {
+    document.getElementById('professionalName').textContent = professionalName;
+    document.getElementById('deleteForm').action = 
+        "{{ url_for('admin_delete_professional', professional_id=0) }}".replace('0', professionalId);
+    
+    var deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+    deleteModal.show();
+}
+</script>
+{% endblock %}

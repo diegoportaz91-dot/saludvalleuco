@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+
+{% block title %}{{ professional.name }} - {{ professional.specialty }} - Salud Valle de Uco{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Back Button -->
+    <div class="mb-3">
+        <a href="{{ url_for('search') }}" class="btn btn-outline-secondary btn-sm">
+            <i class="fas fa-arrow-left me-1"></i>Volver a la búsqueda
+        </a>
+    </div>
+
+    <div class="row">
+        <!-- Main Profile -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-start mb-4">
+                        <!-- Photo -->
+                        {% if professional.is_premium and professional.photo_url %}
+                            <img src="{{ professional.photo_url }}" 
+                                 alt="{{ professional.name }}" 
+                                 class="rounded-circle me-4 professional-photo-large">
+                        {% else %}
+                            <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-4 professional-photo-large-placeholder">
+                                <i class="fas fa-user" style="font-size: 3rem;"></i>
+                            </div>
+                        {% endif %}
+                        
+                        <div class="flex-grow-1">
+                            <!-- Header -->
+                            <div class="mb-3">
+                                <h1 class="h2 mb-2">{{ professional.name }}</h1>
+                                <h5 class="text-primary mb-1">
+                                    <i class="fas fa-stethoscope me-2"></i>
+                                    {{ professional.specialty }}
+                                </h5>
+                                <p class="text-muted mb-0">
+                                    <i class="fas fa-map-marker-alt me-1"></i>
+                                    {{ professional.location }}
+                                </p>
+                            </div>
+                            
+                            <!-- Description -->
+                            {% if professional.description %}
+                                <div class="mb-3">
+                                    <p class="text-muted">{{ professional.description }}</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">
+                        <i class="fas fa-phone me-2"></i>
+                        Información de Contacto
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <!-- Contact Information based on type -->
+                        {% if professional.contact_type == 'phone' or professional.contact_type == 'both' %}
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <i class="fas fa-phone text-primary me-3"></i>
+                                <div>
+                                    <strong>Teléfono</strong><br>
+                                    <a href="tel:{{ professional.phone }}" class="text-decoration-none">
+                                        {{ professional.phone }}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        
+                        {% if (professional.contact_type == 'whatsapp' or professional.contact_type == 'both') and professional.whatsapp %}
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center">
+                                    <i class="fab fa-whatsapp text-success me-3"></i>
+                                    <div>
+                                        <strong>WhatsApp</strong><br>
+                                        <a href="{{ professional.get_whatsapp_link() }}" 
+                                           class="btn btn-sm btn-success" 
+                                           target="_blank">
+                                            <i class="fab fa-whatsapp me-1"></i>
+                                            Enviar mensaje por WhatsApp
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Address -->
+                        {% if professional.address %}
+                            <div class="col-12">
+                                <div class="d-flex align-items-start">
+                                    <i class="fas fa-map-marker-alt text-primary me-3 mt-1"></i>
+                                    <div>
+                                        <strong>Dirección del Consultorio</strong><br>
+                                        <p class="mb-0">{{ professional.address }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Schedule -->
+            {% if professional.schedule %}
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">
+                            <i class="fas fa-clock me-2"></i>
+                            Días y Horarios de Atención
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="schedule-info">
+                            {{ professional.schedule|nl2br|safe }}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Insurance Coverage -->
+            {% if professional.insurance_coverage %}
+                <div class="card shadow-sm">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">
+                            <i class="fas fa-shield-alt me-2"></i>
+                            Obras Sociales
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="insurance-info">
+                            {{ professional.insurance_coverage|nl2br|safe }}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Quick Actions -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h6 class="mb-0">
+                        <i class="fas fa-bolt me-2"></i>
+                        Acciones Rápidas
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        {% if professional.contact_type == 'phone' or professional.contact_type == 'both' %}
+                            <a href="tel:{{ professional.phone }}" class="btn btn-primary">
+                                <i class="fas fa-phone me-2"></i>
+                                Llamar Ahora
+                            </a>
+                        {% endif %}
+                        
+                        {% if (professional.contact_type == 'whatsapp' or professional.contact_type == 'both') and professional.whatsapp %}
+                            <a href="{{ professional.get_whatsapp_link() }}" 
+                               class="btn btn-success" 
+                               target="_blank">
+                                <i class="fab fa-whatsapp me-2"></i>
+                                Enviar mensaje por WhatsApp
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Professional Info -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h6 class="mb-0">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Información del Profesional
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled mb-0">
+                        <li class="mb-2">
+                            <strong>Especialidad:</strong><br>
+                            <span class="text-muted">{{ professional.specialty }}</span>
+                        </li>
+                        <li class="mb-2">
+                            <strong>Localidad:</strong><br>
+                            <span class="text-muted">{{ professional.location }}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Advertisement Space 1 -->
+            <div class="card shadow-sm mb-4 bg-light">
+                <div class="card-body text-center">
+                    <p class="text-muted small mb-2">Publicidad</p>
+                    <div class="bg-white border rounded p-3" style="min-height: 200px;">
+                        <p class="text-muted mb-0">Espacio publicitario disponible</p>
+                        <small class="text-muted">300x200 pixels</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Back to Search -->
+            <div class="card shadow-sm">
+                <div class="card-body text-center">
+                    <a href="{{ url_for('search') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        Volver a Búsqueda
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endblock %}

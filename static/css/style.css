@@ -1,0 +1,314 @@
+/* Custom CSS for Salud Valle de Uco */
+
+:root {
+    --primary-color: #2c5aa0;
+    --secondary-color: #4a90e2;
+    --success-color: #28a745;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+    --light-blue: #e3f2fd;
+    --dark-blue: #1a365d;
+}
+
+/* Override Bootstrap primary color */
+.bg-primary {
+    background-color: var(--primary-color) !important;
+}
+
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--dark-blue);
+    border-color: var(--dark-blue);
+}
+
+.btn-outline-primary {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+/* Body and layout */
+body {
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Navigation */
+.navbar-brand {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+/* Hero section */
+.hero-section {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    min-height: 400px;
+}
+
+/* Category cards */
+.category-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border: none;
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.category-icon i {
+    font-size: 3rem;
+}
+
+/* Professional cards */
+.professional-card {
+    transition: transform 0.2s ease-in-out;
+    border: none;
+}
+
+.professional-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.professional-photo {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+}
+
+.professional-photo-placeholder {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+}
+
+.professional-photo-large {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+}
+
+.professional-photo-large-placeholder {
+    width: 120px;
+    height: 120px;
+}
+
+/* Professional result cards */
+.professional-result-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border: none;
+}
+
+.professional-result-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+}
+
+.premium-highlight {
+    border-left: 4px solid var(--warning-color) !important;
+    background: linear-gradient(to right, #fff9e6 0%, #ffffff 10%);
+}
+
+/* Search form */
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 0.2rem rgba(76, 144, 226, 0.25);
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 10px;
+}
+
+.card-header {
+    border-radius: 10px 10px 0 0 !important;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+/* Badges */
+.badge {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+/* Contact info */
+.contact-info a {
+    color: inherit;
+}
+
+.contact-info a:hover {
+    color: var(--primary-color);
+}
+
+/* Schedule and insurance info */
+.schedule-info,
+.insurance-info {
+    line-height: 1.6;
+    white-space: pre-line;
+}
+
+/* Admin styles */
+.table th {
+    border-top: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(44, 90, 160, 0.05);
+}
+
+/* Flash messages */
+.alert {
+    border: none;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+/* Footer */
+footer {
+    border-top: 1px solid #e9ecef;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .hero-section {
+        min-height: 300px;
+        text-align: center;
+    }
+    
+    .display-4 {
+        font-size: 2rem;
+    }
+    
+    .professional-photo,
+    .professional-photo-placeholder {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+    }
+    
+    .professional-photo-large,
+    .professional-photo-large-placeholder {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .category-icon i {
+        font-size: 2rem;
+    }
+    
+    .btn-group .btn {
+        padding: 0.25rem 0.5rem;
+    }
+}
+
+/* Loading states */
+.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--dark-blue);
+}
+
+/* Animation classes */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Professional form specific styles */
+#premiumFields {
+    transition: opacity 0.3s ease;
+}
+
+#premiumFields.disabled {
+    opacity: 0.5;
+}
+
+#premiumFields.disabled input,
+#premiumFields.disabled textarea,
+#premiumFields.disabled select {
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+}
+
+/* Map styles */
+#map {
+    border-radius: 8px;
+}
+
+/* Utility classes */
+.text-decoration-none:hover {
+    text-decoration: none !important;
+}
+
+.shadow-sm {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+}
+
+.opacity-75 {
+    opacity: 0.75 !important;
+}
+
+/* Print styles */
+@media print {
+    .navbar,
+    .btn,
+    footer {
+        display: none !important;
+    }
+    
+    .card {
+        border: 1px solid #dee2e6 !important;
+    }
+    
+    .bg-primary,
+    .bg-light {
+        background-color: white !important;
+        color: black !important;
+    }
+}
